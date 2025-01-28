@@ -32,9 +32,13 @@ const Home = ({ setSearch }) => {
     navigate("/add-note")
   };
 
+  const handleViewNotes = () => {
+    navigate("/view-notes")
+  };
+
   return (
     <>
-      <Header />
+      <Header handleAddNote={handleAddNote} handleViewNotes={handleViewNotes}/>
       <div className="container">
         <div className="row">
           <div className="col-md-12 home-screen align-items-center justify-content-center">
@@ -63,7 +67,7 @@ const Home = ({ setSearch }) => {
                 value="Add Note"
                 onClick={() => handleAddNote()}
               />
-              <input type="button" className="btn btn-light" value="My Notes" />
+              <input type="button" className="btn btn-light" value="My Notes" onClick={handleViewNotes}/>
             </div>
           </div>
         </div>

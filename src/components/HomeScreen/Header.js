@@ -2,24 +2,19 @@ import React from 'react';
 
 import './Header.css';
 
-const Header = () => {
+const Header = (handleAddNote, handleViewNotes) => {
   return (
     <div className="d-flex justify-content-end col-md-12">
       <nav className="navbar py-3">
         <ul className="nav ml-auto">
           <li className="nav-item">
-            <a href="/" className="nav-link">
-              My Notes
+            <a href="/add-note" className="nav-link">
+              Add Note
             </a>
           </li>
           <li className="nav-item">
-            <a href="/" className="nav-link">
+            <a href="/view-notes" className="nav-link">
               View Notes
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="/" className="nav-link">
-              <i className="fa fa-th"></i>
             </a>
           </li>
           <li className="nav-item">
