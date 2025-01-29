@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill's CSS
 import "./editNote.css"; // Custom styling
+import { useNavigate, useParams } from "react-router-dom";
+import noteContext from "../../context/notes/noteContext";
 
-const EditNote = ({ note, updateNote }) => {
-  const [title, setTitle] = useState(""); // State for the title
-  const [content, setContent] = useState(""); // State for the note content
+const EditNote = ({ getNoteById, updateNote }) => {
+  const { notes, editNote } = useContext(noteContext); // ✅ Now getting notes from context
+  const { id } = useParams();
+  const note = notes.find((n) => n.id === parseInt(id));
 
-  // Preload the note data
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setContent(note.content);
-    }
-  }, [note]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Update the note
-    const updatedNote = { ...note, title, content };
-    updateNote(updatedNote); // Pass the updated note to the update function
-    console.log("Note Updated:", updatedNote);
+  const handleUpdate = () => {
+    editNote(note.id, note.title, note.content, "tag"); // ✅ Update note
+    console.log("Note Updated:");
+    navigate("/");
   };
+  const navigate = useNavigate();
+  
+  const [title, setTitle] = useState(note ? note.title : ""); // State for the title
+  const [content, setContent] = useState(note ? note.content : ""); // State for the note content
+  
+  if (!note) return <p>Note not found</p> 
 
   return (
     <div className="edit-note-container">
       <h2 className="edit-note-title">Edit Note</h2>
-      <form onSubmit={handleSubmit} className="edit-note-form">
+      <form className="edit-note-form">
         {/* Title Input */}
         <input
           type="text"
@@ -46,7 +45,7 @@ const EditNote = ({ note, updateNote }) => {
         />
 
         {/* Save Button */}
-        <button type="submit" className="btn-save">
+        <button onClick={handleUpdate} className="btn-save">
           Update Note
         </button>
       </form>

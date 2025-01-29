@@ -3,55 +3,66 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  useParams,
+  Navigate,
 } from "react-router-dom";
 import AddNote from "./components/AddNote/AddNote";
 import ViewNotes from "./components/ViewNotes/ViewNotes";
-// import NoteList from "./components/NoteList";
-import SingleNote from "./components/EditNote/EditNote";
+import EditNote from "./components/EditNote/EditNote";
 import Home from "./components/HomeScreen/Home";
+import ViewNote from "./components/ViewNote/ViewNote";
+import NoteState from "./context/notes/NoteState";
+import Login from "./components/Login/Login";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  // serach data
-  const [searchData, setSearchData] = useState({});
-  //set search term
-  // const setSearch = async (term) => {
-  //   setSearchTerm(term);
-  //   await setData(term);
-  //   history.push('/search');
-  // };
-  const note = {
-    id: 1,
-    title: "First Note",
-    content: "This is the content of the first note.",
+  const isAuthenticated = () => {
+    // return localStorage.getItem("user") !== null;
+    return true;
   };
 
-  const updateNote = (updatedNote) => {
-    // const index = notes.findIndex((note) => note.id === updatedNote.id);
-    // if (index > -1) {
-    //   notes[index] = updatedNote; // Update the note in the array
-    //   console.log("Updated Notes:", notes); // Log updated notes
-    // }
-    console.log("Notes");
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    setUser(userData); // Update user state
   };
+
+  const handleLogout = () => {
+    setUser(null); // Clear user state
+  };
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/add-note" element={<AddNote />} />
-        <Route path="/view-notes" element={<ViewNotes />} />
-        <Route
-          path="/view-note/:id"
-          element={
-            <SingleNote
-              note={note} // Find the specific note
-              updateNote={updateNote} // Pass the update function
-            />
-          }
-        />
-      </Routes>
-    </Router>
+    <NoteState>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login onLogin={handleLogin}/>} />
+          <Route
+            path="/"
+            element={isAuthenticated() ? <Home user={user} onLogout={handleLogout}/> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/add-note"
+            element={isAuthenticated() ? <AddNote /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/view-notes"
+            element={
+              isAuthenticated() ? <ViewNotes /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/edit-note/:id"
+            element={
+              isAuthenticated() ? <EditNote /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/view-note/:id"
+            element={
+              isAuthenticated() ? <ViewNote /> : <Navigate to="/login" />
+            }
+          />
+        </Routes>
+      </Router>
+    </NoteState>
   );
 }
 
