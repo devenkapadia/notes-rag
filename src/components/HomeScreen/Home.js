@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const Home = ({ user, onLogout }) => {
   const [term, setTerm] = useState("");
-  const [messages, setMessages] = useState([]); // State to store chat messages
+  const [response, setResponse] = useState(""); // State to store the response
+  const [noteName, setNoteName] = useState(""); // State to store the note name
   const navigate = useNavigate();
 
   // Clear term by clicking on cross
@@ -22,20 +23,10 @@ const Home = ({ user, onLogout }) => {
       /^[a-zA-Z0-9]+[" "]/.test(term) ||
       /^[" "]+[a-zA-Z0-9]/.test(term)
     ) {
-      // Add user's message to chat
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: term, isUser: true },
-      ]);
-
-      // Add system's response
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: `${term} okay`, isUser: false },
-      ]);
-
-      // Clear the input field
-      setTerm("");
+      // Simulate a response (replace with actual logic)
+      setResponse(`Response for: "${term}"`);
+      setNoteName("Note: Sample Note Name"); // Simulate note name retrieval
+      setTerm(""); // Clear the input field
     }
   };
 
@@ -49,92 +40,53 @@ const Home = ({ user, onLogout }) => {
     navigate("/view-notes");
   };
 
-  // Reset chat and go back to initial interface
-  const handleResetChat = () => {
-    setMessages([]); // Clear chat messages
-  };
-
   return (
     <>
       <Header user={user} onLogout={onLogout} />
-      {messages.length === 0 ? (
-        // Initial Interface (when no messages are written)
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12 home-screen align-items-center justify-content-center">
-              <img src={logo} alt="App Logo" className="octopus" />
-              <div className="search-box col-md-7 border d-flex py-2 justify-content-between align-items-center">
-                <i className="fa fa-search"></i>
-                <form className="form-search" onSubmit={handleSubmit}>
-                  <input
-                    type="text"
-                    name="term"
-                    id="term"
-                    value={term}
-                    onChange={(e) => setTerm(e.target.value)}
-                    placeholder="Type a message..."
-                  />
-                </form>
-                {term && <i className="fa fa-close" onClick={clearTerm}></i>}
-              </div>
-              <div className="buttons d-flex gap-3 col-md-4 ml-5 mt-4 align-items-center justify-content-center">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12 home-screen align-items-center justify-content-center">
+            <img src={logo} alt="App Logo" className="octopus" />
+            {/* Search Bar */}
+            <div className="search-box col-md-7 border d-flex py-2 justify-content-between align-items-center">
+              <i className="fa fa-search"></i>
+              <form className="form-search" onSubmit={handleSubmit}>
                 <input
-                  type="button"
-                  className="btn btn-light mx-1"
-                  value="Add Note"
-                  onClick={handleAddNote}
+                  type="text"
+                  name="term"
+                  id="term"
+                  value={term}
+                  onChange={(e) => setTerm(e.target.value)}
+                  placeholder="Type a message..."
                 />
-                <input
-                  type="button"
-                  className="btn btn-light"
-                  value="My Notes"
-                  onClick={handleViewNotes}
-                />
+              </form>
+              {term && <i className="fa fa-close" onClick={clearTerm}></i>}
+            </div>
+            {/* Response Box */}
+            {response && (
+              <div className="response-box col-md-7 mt-4">
+                <div className="response-text">{response}</div>
+                <div className="note-name">{noteName}</div>
               </div>
+            )}
+            {/* Buttons */}
+            <div className="buttons d-flex gap-3 col-md-4 ml-5 mt-4 align-items-center justify-content-center">
+              <input
+                type="button"
+                className="btn btn-light mx-1"
+                value="Add Note"
+                onClick={handleAddNote}
+              />
+              <input
+                type="button"
+                className="btn btn-light"
+                value="My Notes"
+                onClick={handleViewNotes}
+              />
             </div>
           </div>
         </div>
-      ) : (
-        // Full-Page Chat Interface (when messages are written)
-        <div className="home-container">
-          {/* Logo at the Top */}
-          <div className="chat-logo">
-            <img src={logo} alt="App Logo" className="octopus" />
-            <button className="reset-chat-btn" onClick={handleResetChat}>
-              Reset Chat
-            </button>
-          </div>
-
-          {/* Chat Interface */}
-          <div className="chat-container">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`chat-message ${
-                  message.isUser ? "user-message" : "system-message"
-                }`}
-              >
-                {message.text}
-              </div>
-            ))}
-          </div>
-
-          {/* Input Box */}
-          <div className="input-box">
-            <form className="form-search" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="term"
-                id="term"
-                value={term}
-                onChange={(e) => setTerm(e.target.value)}
-                placeholder="Type a message..."
-              />
-              {term && <i className="fa fa-close" onClick={clearTerm}></i>}
-            </form>
-          </div>
-        </div>
-      )}
+      </div>
     </>
   );
 };
